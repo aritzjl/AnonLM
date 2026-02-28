@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project follows Semantic Versioning.
 
+## [0.1.2] - 2026-02-28
+### Added
+- Cross-chunk person entity linking stage to merge aliases that refer to the same person in a full document.
+- New linking prompt and schema models for structured alias linking output.
+- Test coverage for linking behavior in graph/node and end-to-end engine flow.
+
+### Changed
+- Graph flow now routes processed chunks through a linking node before final anonymization.
+- Token counters and reverse mappings are recomputed after alias merges to keep mappings consistent.
+
 ## [0.1.1] - 2026-02-28
 ### Added
 - `AnonymizationResult` now includes chunking metadata (`chunk_count`, `chunks`, `max_chunk_chars`, `chunk_overlap_chars`).
