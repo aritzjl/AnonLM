@@ -87,3 +87,46 @@ JSON Schema (follow EXACTLY):
   \"required\": [\"entities\"],
   \"additionalProperties\": false
 }"""
+
+
+LINKING_PROMPT = """You are a PII entity linker for a full document.
+
+Input is JSON with:
+- \"text\": full original text.
+- \"entities\": extracted entities with fields \"type\" and \"text\".
+
+Return ONLY valid JSON and nothing else.
+Return links ONLY when two mentions clearly refer to the same real-world entity.
+Do NOT invent or normalize new strings. Use only literal entity texts from input.
+If no links are clear, return {\"links\": []}.
+
+JSON Schema (follow EXACTLY):
+{
+  \"type\": \"object\",
+  \"properties\": {
+    \"links\": {
+      \"type\": \"array\",
+      \"items\": {
+        \"type\": \"object\",
+        \"properties\": {
+          \"type\": {
+            \"type\": \"string\",
+            \"enum\": [\"PERSON\", \"EMAIL\", \"PHONE\", \"ID_NUMBER\", \"ORG\"]
+          },
+          \"representative\": {
+            \"type\": \"string\",
+            \"minLength\": 1
+          },
+          \"aliases\": {
+            \"type\": \"array\",
+            \"items\": {\"type\": \"string\", \"minLength\": 1}
+          }
+        },
+        \"required\": [\"type\", \"representative\", \"aliases\"],
+        \"additionalProperties\": false
+      }
+    }
+  },
+  \"required\": [\"links\"],
+  \"additionalProperties\": false
+}"""

@@ -13,6 +13,7 @@ class PIIState(TypedDict):
     chunks: list[str]
     chunk_index: int
     all_entities: Annotated[list[dict[str, str]], operator.add]
+    entity_links: list[dict[str, str]]
     mapping_forward: dict[str, str]
     mapping_reverse: dict[str, str]
     type_counters: dict[str, int]

@@ -9,7 +9,13 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import RetryPolicy, default_retry_on
 
 from anonlm.config import AnonLMConfig
-from anonlm.nodes import make_anonymize_node, make_prepare_node, make_process_chunk_node, routing_fn
+from anonlm.nodes import (
+    make_anonymize_node,
+    make_link_entities_node,
+    make_prepare_node,
+    make_process_chunk_node,
+    routing_fn,
+)
 from anonlm.state import PIIState
 
 
@@ -42,11 +48,13 @@ def create_graph(config: AnonLMConfig, llm: Any):
     graph = StateGraph(PIIState)
     graph.add_node("prepare", make_prepare_node(config))
     graph.add_node("process_chunk", make_process_chunk_node(llm), retry_policy=process_chunk_retry)
+    graph.add_node("link_entities", make_link_entities_node(llm), retry_policy=process_chunk_retry)
     graph.add_node("anonymize", make_anonymize_node())
 
     graph.add_edge(START, "prepare")
     graph.add_edge("prepare", "process_chunk")
     graph.add_conditional_edges("process_chunk", routing_fn)
+    graph.add_edge("link_entities", "anonymize")
     graph.add_edge("anonymize", END)
 
     return graph.compile()

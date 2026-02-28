@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from anonlm.config import AnonLMConfig
-from anonlm.nodes import _chunk_text, make_anonymize_node, make_prepare_node, make_process_chunk_node
-from anonlm.schema import PIIEntity, PIIResponse, PIIType
+from anonlm.nodes import (
+    _chunk_text,
+    make_anonymize_node,
+    make_link_entities_node,
+    make_prepare_node,
+    make_process_chunk_node,
+)
+from anonlm.schema import PIIEntity, PIILink, PIILinkingResponse, PIIResponse, PIIType
 
 
 @dataclass
 class FakeLLM:
-    response: PIIResponse
+    response: Any
 
     def invoke(self, messages):  # noqa: ANN001
         return self.response
@@ -103,3 +110,35 @@ def test_anonymize_node_longer_match_first() -> None:
 
     result = anonymize_node(state)
     assert result["anonymized_text"] == "[[PERSON_1]] and [[PERSON_2]] are here."
+
+
+def test_link_entities_node_merges_person_aliases() -> None:
+    llm = FakeLLM(
+        response=PIILinkingResponse(
+            links=[
+                PIILink(type=PIIType.PERSON, representative="Sarah Johnson", aliases=["Sarah"])
+            ]
+        )
+    )
+    link_entities = make_link_entities_node(llm)
+    state = {
+        "original_text": "My name is Sarah Johnson. Best regards, Sarah.",
+        "all_entities": [
+            {
+                "type": "PERSON",
+                "text": "Sarah Johnson",
+                "canonical": "Sarah Johnson",
+                "token": "[[PERSON_1]]",
+            },
+            {"type": "PERSON", "text": "Sarah", "canonical": "Sarah", "token": "[[PERSON_2]]"},
+        ],
+        "mapping_forward": {"Sarah Johnson": "[[PERSON_1]]", "Sarah": "[[PERSON_2]]"},
+        "mapping_reverse": {"[[PERSON_1]]": "Sarah Johnson", "[[PERSON_2]]": "Sarah"},
+        "type_counters": {"PERSON": 2},
+    }
+
+    result = link_entities(state)
+    assert result["mapping_forward"]["Sarah"] == "[[PERSON_1]]"
+    assert "[[PERSON_2]]" not in result["mapping_reverse"]
+    assert result["type_counters"]["PERSON"] == 1
+    assert result["mapping_reverse"]["[[PERSON_1]]"] == "Sarah Johnson"

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PIIType(str, Enum):
@@ -22,3 +22,13 @@ class PIIEntity(BaseModel):
 
 class PIIResponse(BaseModel):
     entities: list[PIIEntity]
+
+
+class PIILink(BaseModel):
+    type: PIIType
+    representative: str
+    aliases: list[str] = Field(default_factory=list)
+
+
+class PIILinkingResponse(BaseModel):
+    links: list[PIILink]

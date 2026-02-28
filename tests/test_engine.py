@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from anonlm.config import AnonLMConfig
 from anonlm.engine import AnonymizationEngine
-from anonlm.schema import PIIEntity, PIIResponse, PIIType
+from anonlm.schema import PIIEntity, PIILink, PIILinkingResponse, PIIResponse, PIIType
 
 
 @dataclass
 class SequenceLLM:
-    responses: list[PIIResponse]
+    responses: list[Any]
 
     def __post_init__(self) -> None:
         self.calls = 0
@@ -86,3 +87,32 @@ def test_engine_detect_entities() -> None:
     entities = engine.detect_entities("user@example.com")
     assert len(entities) == 1
     assert entities[0]["type"] == "EMAIL"
+
+
+def test_engine_links_person_aliases_across_chunks() -> None:
+    llm = SequenceLLM(
+        responses=[
+            PIIResponse(entities=[PIIEntity(type=PIIType.PERSON, text="Sarah Johnson")]),
+            PIIResponse(entities=[PIIEntity(type=PIIType.PERSON, text="Sarah")]),
+            PIILinkingResponse(
+                links=[
+                    PIILink(
+                        type=PIIType.PERSON,
+                        representative="Sarah Johnson",
+                        aliases=["Sarah"],
+                    )
+                ]
+            ),
+        ]
+    )
+    config = AnonLMConfig(api_key="test-key", max_chunk_chars=32, chunk_overlap_chars=8)
+    engine = AnonymizationEngine(config=config, llm=llm)
+
+    text = "My name is Sarah Johnson.\n\nBest regards,\nSarah"
+    result = engine.anonymize(text)
+
+    assert llm.calls == 3
+    assert result.mapping_forward["Sarah Johnson"] == "[[PERSON_1]]"
+    assert result.mapping_forward["Sarah"] == "[[PERSON_1]]"
+    assert "[[PERSON_2]]" not in result.mapping_reverse
+    assert result.anonymized_text.count("[[PERSON_1]]") >= 2
