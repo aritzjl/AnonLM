@@ -251,7 +251,15 @@ def make_link_entities_node(llm: Any) -> Callable[[PIIState], dict[str, Any]]:
 
                 mapping_forward[alias_canonical] = representative_token
                 linked_pairs.append(
-                    {"type": link.type.value, "from": alias, "to": link.representative}
+                    {
+                        "type": link.type.value,
+                        "from": alias,
+                        "to": link.representative,
+                        "from_canonical": alias_canonical,
+                        "to_canonical": representative_canonical,
+                        "from_token": alias_token,
+                        "to_token": representative_token,
+                    }
                 )
 
         live_tokens = set(mapping_forward.values())

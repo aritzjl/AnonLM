@@ -142,3 +142,14 @@ def test_link_entities_node_merges_person_aliases() -> None:
     assert "[[PERSON_2]]" not in result["mapping_reverse"]
     assert result["type_counters"]["PERSON"] == 1
     assert result["mapping_reverse"]["[[PERSON_1]]"] == "Sarah Johnson"
+    assert result["entity_links"] == [
+        {
+            "type": "PERSON",
+            "from": "Sarah",
+            "to": "Sarah Johnson",
+            "from_canonical": "Sarah",
+            "to_canonical": "Sarah Johnson",
+            "from_token": "[[PERSON_2]]",
+            "to_token": "[[PERSON_1]]",
+        }
+    ]

@@ -129,7 +129,7 @@ See `docs/benchmarking.md` for protocol and interpretation guidelines.
 
 `AnonymizationResult` includes linking metadata in `result.linking` (and in `result.to_dict()["linking"]`):
 - `link_count`: number of alias links applied
-- `links`: list of applied links with `type`, `from`, and `to`
+- `links`: list of applied links with `type`, `from`, `to`, `from_canonical`, `to_canonical`, `from_token`, `to_token`
 
 ## Project status
 

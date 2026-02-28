@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project follows Semantic Versioning.
 
+## [0.1.5] - 2026-02-28
+### Added
+- Linking metadata now includes detailed merge traces per entity link: source/target text, canonical values, and token mapping (`from_token` → `to_token`).
+
+### Changed
+- Updated node and engine tests, plus README docs, to cover enriched linking details.
+
 ## [0.1.4] - 2026-02-28
 ### Added
 - `AnonymizationResult` now exposes linking metadata in `result.linking`.

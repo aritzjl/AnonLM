@@ -119,8 +119,9 @@ def test_engine_links_person_aliases_across_chunks() -> None:
     assert "[[PERSON_2]]" not in result.mapping_reverse
     assert result.anonymized_text.count("[[PERSON_1]]") >= 2
     assert result.linking.link_count == 1
-    assert result.linking.links[0] == {
-        "type": "PERSON",
-        "from": "Sarah",
-        "to": "Sarah Johnson",
-    }
+    link = result.linking.links[0]
+    assert link["type"] == "PERSON"
+    assert link["from"] == "Sarah"
+    assert link["to"] == "Sarah Johnson"
+    assert link["from_token"] == "[[PERSON_2]]"
+    assert link["to_token"] == "[[PERSON_1]]"
