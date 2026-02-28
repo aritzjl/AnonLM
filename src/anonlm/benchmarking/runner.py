@@ -223,7 +223,13 @@ def run_benchmark(
     by_type = aggregate_by_type(results)
 
     if output is not None:
-        print_report(results=results, overall=overall, by_type=by_type, verbose=verbose, stream=output)
+        print_report(
+            results=results,
+            overall=overall,
+            by_type=by_type,
+            verbose=verbose,
+            stream=output,
+        )
 
     exit_code = 0 if overall["f1"] >= threshold_f1 else 1
     benchmark_result = BenchmarkRunResult(

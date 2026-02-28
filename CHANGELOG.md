@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project follows Semantic Versioning.
 
+## [0.1.3] - 2026-02-28
+### Changed
+- Applied Ruff-driven cleanup and formatting updates across CLI and benchmarking modules.
+- Updated tests to satisfy lint constraints without behavior changes.
+
 ## [0.1.2] - 2026-02-28
 ### Added
 - Cross-chunk person entity linking stage to merge aliases that refer to the same person in a full document.

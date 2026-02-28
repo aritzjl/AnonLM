@@ -23,7 +23,9 @@ def test_run_benchmark_without_history(tmp_path: Path) -> None:
     with open(dataset, "w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(["doc_id", "chunk_id", "input", "expected"])
-        writer.writerow(["DOC_001", "1", "Jane Doe arrived.", '[{"type": "PERSON", "text": "Jane Doe"}]'])
+        writer.writerow(
+            ["DOC_001", "1", "Jane Doe arrived.", '[{"type": "PERSON", "text": "Jane Doe"}]']
+        )
         writer.writerow(["DOC_002", "1", "No pii.", "[]"])
 
     result = run_benchmark(

@@ -15,7 +15,14 @@ class FakeEngine:
             anonymized_text=text.replace("Jane Doe", "[[PERSON_1]]"),
             mapping_forward={"Jane Doe": "[[PERSON_1]]"},
             mapping_reverse={"[[PERSON_1]]": "Jane Doe"},
-            all_entities=[{"type": "PERSON", "text": "Jane Doe", "canonical": "Jane Doe", "token": "[[PERSON_1]]"}],
+            all_entities=[
+                {
+                    "type": "PERSON",
+                    "text": "Jane Doe",
+                    "canonical": "Jane Doe",
+                    "token": "[[PERSON_1]]",
+                }
+            ],
             type_counters={"PERSON": 1},
             chunking=ChunkingMetadata(
                 chunk_count=1,
@@ -78,5 +85,14 @@ def test_cli_benchmark_run(monkeypatch) -> None:  # noqa: ANN001
     monkeypatch.setattr(cli, "create_engine", lambda cfg: object())
     monkeypatch.setattr(cli, "run_benchmark", lambda **kwargs: expected_result)
 
-    code = cli.main(["benchmark", "run", "--dataset", "datasets/pii_mvp_dataset.csv", "--api-key", "test-key"])
+    code = cli.main(
+        [
+            "benchmark",
+            "run",
+            "--dataset",
+            "datasets/pii_mvp_dataset.csv",
+            "--api-key",
+            "test-key",
+        ]
+    )
     assert code == 0

@@ -7,7 +7,6 @@ import datetime as dt
 import hashlib
 import json
 import subprocess
-import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -39,7 +38,7 @@ def _safe_git_commit() -> str:
         return "unknown"
 
 
-def _build_row_payload(row: "RowResult") -> dict[str, object]:
+def _build_row_payload(row: RowResult) -> dict[str, object]:
     return {
         "doc_id": row.doc_id,
         "chunk_id": row.chunk_id,
@@ -75,7 +74,7 @@ def _build_row_payload(row: "RowResult") -> dict[str, object]:
 
 def write_run_artifacts(
     *,
-    result: "BenchmarkRunResult",
+    result: BenchmarkRunResult,
     script_name: str,
     dataset_path: str,
     history_dir: str,

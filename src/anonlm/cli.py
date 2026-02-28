@@ -51,7 +51,10 @@ def _command_anonymize(args: argparse.Namespace) -> int:
     payload = result.to_dict()
 
     if args.output:
-        Path(args.output).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        Path(args.output).write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
     else:
         print(json.dumps(payload, ensure_ascii=False, indent=2))
 
@@ -98,7 +101,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     benchmark_run_parser = benchmark_subparsers.add_parser("run", help="Run benchmark")
     benchmark_run_parser.add_argument("--dataset", default="datasets/pii_mvp_dataset.csv")
-    benchmark_run_parser.add_argument("--split", choices=[value.value for value in BenchmarkSplit], default="dev")
+    benchmark_run_parser.add_argument(
+        "--split",
+        choices=[value.value for value in BenchmarkSplit],
+        default="dev",
+    )
     benchmark_run_parser.add_argument("--verbose", action="store_true")
     benchmark_run_parser.add_argument("--history-dir", default="runs/benchmarks")
     benchmark_run_parser.add_argument("--no-save-history", action="store_true")

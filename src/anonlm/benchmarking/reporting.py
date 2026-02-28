@@ -18,7 +18,7 @@ def bar(value: float, width: int = 20) -> str:
     return "█" * filled + "░" * (width - filled)
 
 
-def print_row_detail(result: "RowResult", stream: TextIO) -> None:
+def print_row_detail(result: RowResult, stream: TextIO) -> None:
     icon = PASS if not result.fn and not result.fp else (WARN if result.tp else FAIL)
     print(
         f"\n  {icon} {result.doc_id} chunk {result.chunk_id}  "
@@ -39,7 +39,7 @@ def print_row_detail(result: "RowResult", stream: TextIO) -> None:
 
 def print_report(
     *,
-    results: list["RowResult"],
+    results: list[RowResult],
     overall: dict[str, float],
     by_type: dict[str, dict[str, float]],
     verbose: bool,
@@ -57,12 +57,17 @@ def print_report(
     print("\n" + "═" * 70, file=output)
     print("  PER-TYPE METRICS", file=output)
     print("═" * 70, file=output)
-    print(f"  {'Type':<12} {'TP':>4} {'FP':>4} {'FN':>4}  {'Precision':>9}  {'Recall':>7}  {'F1':>6}", file=output)
+    print(
+        f"  {'Type':<12} {'TP':>4} {'FP':>4} {'FN':>4}  "
+        f"{'Precision':>9}  {'Recall':>7}  {'F1':>6}",
+        file=output,
+    )
     print("  " + "-" * 62, file=output)
 
     for pii_type, metrics in by_type.items():
         print(
-            f"  {pii_type:<12} {int(metrics['tp']):>4} {int(metrics['fp']):>4} {int(metrics['fn']):>4}"
+            f"  {pii_type:<12} {int(metrics['tp']):>4} "
+            f"{int(metrics['fp']):>4} {int(metrics['fn']):>4}"
             f"  {metrics['precision']:>8.1%}  {metrics['recall']:>7.1%}  {metrics['f1']:>5.1%}"
             f"  {bar(metrics['f1'], 12)}",
             file=output,
@@ -75,7 +80,10 @@ def print_report(
     print(f"  True Positives : {int(overall['tp'])}", file=output)
     print(f"  False Positives: {int(overall['fp'])}", file=output)
     print(f"  False Negatives: {int(overall['fn'])}", file=output)
-    print(f"  Precision      : {overall['precision']:.1%}  {bar(overall['precision'])}", file=output)
+    print(
+        f"  Precision      : {overall['precision']:.1%}  {bar(overall['precision'])}",
+        file=output,
+    )
     print(f"  Recall         : {overall['recall']:.1%}  {bar(overall['recall'])}", file=output)
     print(f"  F1             : {overall['f1']:.1%}  {bar(overall['f1'])}", file=output)
 

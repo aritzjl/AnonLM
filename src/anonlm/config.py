@@ -54,7 +54,7 @@ class AnonLMConfig:
     retry_max_attempts: int = 4
 
     @classmethod
-    def from_env(cls) -> "AnonLMConfig":
+    def from_env(cls) -> AnonLMConfig:
         provider_raw = os.getenv("ANONLM_PROVIDER", ProviderPreset.OPENAI.value).lower().strip()
         provider = ProviderPreset(provider_raw)
         provider_defaults = _PROVIDER_DEFAULTS[provider]
@@ -79,7 +79,7 @@ class AnonLMConfig:
             chunk_overlap_chars=chunk_overlap_chars,
         ).validate()
 
-    def with_overrides(self, **kwargs: object) -> "AnonLMConfig":
+    def with_overrides(self, **kwargs: object) -> AnonLMConfig:
         updated = self
 
         provider_value = kwargs.pop("provider", None)
@@ -110,7 +110,7 @@ class AnonLMConfig:
 
         return updated.validate()
 
-    def validate(self) -> "AnonLMConfig":
+    def validate(self) -> AnonLMConfig:
         if self.provider == ProviderPreset.CUSTOM and not self.base_url.strip():
             raise ValueError("ANONLM_BASE_URL is required when provider is 'custom'.")
         if not self.model_name.strip():
