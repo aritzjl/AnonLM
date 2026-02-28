@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project follows Semantic Versioning.
 
+## [0.1.6] - 2026-02-28
+### Changed
+- Bumped project version to `0.1.6`.
+- Updated project objectives to include implementing Langfuse-based traceability.
+
 ## [0.1.5] - 2026-02-28
 ### Added
 - Linking metadata now includes detailed merge traces per entity link: source/target text, canonical values, and token mapping (`from_token` → `to_token`).

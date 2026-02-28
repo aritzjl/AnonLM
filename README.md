@@ -8,6 +8,10 @@ It provides:
 - A unified CLI for anonymization and benchmark execution.
 - Benchmark history artifacts for auditability and experiment tracking.
 
+## Demo
+
+- https://anonlm.aritzjaber.com
+
 ## Installation
 
 ```bash
@@ -140,6 +144,7 @@ Current status: `0.x` (early API hardening). Expect minor breaking changes until
 1. Reach `>90%` reliability with `gpt-oss-20b` on the current baseline dataset (`datasets/pii_mvp_dataset.csv`).
 2. Build a stronger benchmark dataset, likely by adapting a PII dataset from Hugging Face and normalizing it to AnonLM's benchmark format.
 3. Reach `>=90%` reliability with `gpt-oss-20b` on the new dataset.
+4. Implement Langfuse-based observability and traceability for anonymization and benchmark runs.
 
 ## License
 

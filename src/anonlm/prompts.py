@@ -11,8 +11,6 @@ If no PII is present, return \"entities\": [].
 
 Entity \"text\" rules:
 - Default: copy the exact literal substring from the chunk (same characters and casing).
-- Exception: ORG inferred from an email domain root -> output a human-readable title-case
-  brand name (not the raw domain token).
 
 PROHIBITIONS - these override all other rules:
 P1. The domain root \"example\" (any capitalization) must NOT be tagged as ORG. It is a
@@ -34,15 +32,9 @@ Type-specific rules:
 
 2) ORG
 - Tag organization names that appear LITERALLY in the text.
-- Also infer ORG from an email domain root ONLY if the root is a coined brand name:
-  * A domain root that combines a distinctive element with a business-type suffix
-    (labs, tech, corp, co, group, net, etc.) suggests a brand name.
-  * NOT a brand: a root that is a single common word in any language (mail, health,
-    wellbeing, training, etc.) or a compound of only common dictionary words.
-  * Always blocked (any case): example, test, demo, localhost, info, invalid.
-  * When in doubt, do NOT infer ORG from the domain.
-  * For inferred ORG: output the title-case brand name, not the raw domain token.
-- \".org\" TLD alone does NOT indicate ORG - evaluate only the domain root.
+- NEVER infer ORG from any email domain, subdomain, or TLD.
+- If an organization is only implied by an email address and not written explicitly,
+  do NOT emit ORG.
 - Departments and roles are NEVER ORG (RRHH, HR, IT, Finance, Accounting).
 
 3) PERSON
