@@ -2,7 +2,12 @@
 
 from anonlm.api import anonymize, create_engine, deanonymize
 from anonlm.config import AnonLMConfig, ProviderPreset
-from anonlm.engine import AnonymizationEngine, AnonymizationResult, ChunkingMetadata
+from anonlm.engine import (
+    AnonymizationEngine,
+    AnonymizationResult,
+    ChunkingMetadata,
+    LinkingMetadata,
+)
 from anonlm.schema import PIIEntity, PIIResponse, PIIType
 
 __all__ = [
@@ -10,6 +15,7 @@ __all__ = [
     "AnonymizationEngine",
     "AnonymizationResult",
     "ChunkingMetadata",
+    "LinkingMetadata",
     "PIIEntity",
     "PIIResponse",
     "PIIType",

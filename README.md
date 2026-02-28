@@ -32,6 +32,7 @@ print(result.anonymized_text)
 print(result.mapping_forward)
 print(result.chunking.chunk_count)
 print(result.chunking.chunks)
+print(result.linking.link_count)
 ```
 
 ## Quickstart (CLI)
@@ -125,6 +126,10 @@ See `docs/benchmarking.md` for protocol and interpretation guidelines.
 - `chunks`: chunk content list in processing order
 - `max_chunk_chars`: chunk size setting used
 - `chunk_overlap_chars`: overlap setting used
+
+`AnonymizationResult` includes linking metadata in `result.linking` (and in `result.to_dict()["linking"]`):
+- `link_count`: number of alias links applied
+- `links`: list of applied links with `type`, `from`, and `to`
 
 ## Project status
 

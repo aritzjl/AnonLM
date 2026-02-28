@@ -76,6 +76,8 @@ def test_engine_to_dict_contains_chunking_metadata() -> None:
     assert payload["chunking"]["chunks"] == ["Jane Doe is here."]
     assert payload["chunking"]["max_chunk_chars"] == 50
     assert payload["chunking"]["chunk_overlap_chars"] == 10
+    assert payload["linking"]["link_count"] == 0
+    assert payload["linking"]["links"] == []
 
 
 def test_engine_detect_entities() -> None:
@@ -116,3 +118,9 @@ def test_engine_links_person_aliases_across_chunks() -> None:
     assert result.mapping_forward["Sarah"] == "[[PERSON_1]]"
     assert "[[PERSON_2]]" not in result.mapping_reverse
     assert result.anonymized_text.count("[[PERSON_1]]") >= 2
+    assert result.linking.link_count == 1
+    assert result.linking.links[0] == {
+        "type": "PERSON",
+        "from": "Sarah",
+        "to": "Sarah Johnson",
+    }

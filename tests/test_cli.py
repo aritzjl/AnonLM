@@ -42,6 +42,7 @@ def test_cli_anonymize_text(monkeypatch, capsys) -> None:  # noqa: ANN001
     assert code == 0
     assert "[[PERSON_1]]" in captured.out
     assert '"chunking"' in captured.out
+    assert '"linking"' in captured.out
 
 
 def test_cli_anonymize_file_output(monkeypatch, tmp_path: Path) -> None:  # noqa: ANN001
@@ -67,6 +68,7 @@ def test_cli_anonymize_file_output(monkeypatch, tmp_path: Path) -> None:  # noqa
     output = output_path.read_text(encoding="utf-8")
     assert "[[PERSON_1]]" in output
     assert '"chunking"' in output
+    assert '"linking"' in output
 
 
 def test_cli_benchmark_run(monkeypatch) -> None:  # noqa: ANN001

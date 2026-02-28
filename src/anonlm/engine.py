@@ -31,6 +31,18 @@ class ChunkingMetadata:
 
 
 @dataclass(frozen=True)
+class LinkingMetadata:
+    link_count: int
+    links: list[dict[str, str]]
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "link_count": self.link_count,
+            "links": self.links,
+        }
+
+
+@dataclass(frozen=True)
 class AnonymizationResult:
     anonymized_text: str
     mapping_forward: dict[str, str]
@@ -45,6 +57,12 @@ class AnonymizationResult:
             chunk_overlap_chars=0,
         )
     )
+    linking: LinkingMetadata = field(
+        default_factory=lambda: LinkingMetadata(
+            link_count=0,
+            links=[],
+        )
+    )
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -54,6 +72,7 @@ class AnonymizationResult:
             "all_entities": self.all_entities,
             "type_counters": self.type_counters,
             "chunking": self.chunking.to_dict(),
+            "linking": self.linking.to_dict(),
         }
 
 
@@ -69,6 +88,7 @@ class AnonymizationEngine:
             raise ValueError("Text must not be empty.")
 
         result = self._app.invoke({"original_text": source})
+        entity_links = result.get("entity_links", [])
         return AnonymizationResult(
             anonymized_text=result["anonymized_text"],
             mapping_forward=result["mapping_forward"],
@@ -80,6 +100,10 @@ class AnonymizationEngine:
                 chunks=result["chunks"],
                 max_chunk_chars=self.config.max_chunk_chars,
                 chunk_overlap_chars=self.config.chunk_overlap_chars,
+            ),
+            linking=LinkingMetadata(
+                link_count=len(entity_links),
+                links=entity_links,
             ),
         )
 
