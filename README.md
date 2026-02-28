@@ -122,6 +122,12 @@ See `docs/benchmarking.md` for protocol and interpretation guidelines.
 
 Current status: `0.x` (early API hardening). Expect minor breaking changes until `1.0.0`.
 
+## Next objectives
+
+1. Reach `>90%` reliability with `gpt-oss-20b` on the current baseline dataset (`datasets/pii_mvp_dataset.csv`).
+2. Build a stronger benchmark dataset, likely by adapting a PII dataset from Hugging Face and normalizing it to AnonLM's benchmark format.
+3. Reach `>=90%` reliability with `gpt-oss-20b` on the new dataset.
+
 ## License
 
 Apache-2.0
