@@ -11,7 +11,7 @@ It provides:
 ## Installation
 
 ```bash
-pip install anonlm
+pip install anonlm-pii
 ```
 
 For development:
