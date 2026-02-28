@@ -37,6 +37,8 @@ def test_engine_anonymize_tokens() -> None:
     assert "[[PERSON_1]]" in result.anonymized_text
     assert "[[ORG_1]]" in result.anonymized_text
     assert result.mapping_forward["Maria Garcia"] == "[[PERSON_1]]"
+    assert result.chunking.chunk_count == 1
+    assert result.chunking.chunks == ["Maria Garcia works at Acme Corp."]
 
 
 def test_engine_same_entity_same_token_across_chunks() -> None:
@@ -55,6 +57,24 @@ def test_engine_same_entity_same_token_across_chunks() -> None:
     assert llm.calls == 2
     assert list(result.mapping_forward.values()).count("[[PERSON_1]]") == 1
     assert "[[PERSON_2]]" not in result.mapping_forward.values()
+    assert result.chunking.chunk_count == 2
+
+
+def test_engine_to_dict_contains_chunking_metadata() -> None:
+    llm = SequenceLLM(
+        responses=[PIIResponse(entities=[PIIEntity(type=PIIType.PERSON, text="Jane Doe")])]
+    )
+    config = AnonLMConfig(api_key="test-key", max_chunk_chars=50, chunk_overlap_chars=10)
+    engine = AnonymizationEngine(config=config, llm=llm)
+
+    result = engine.anonymize("Jane Doe is here.")
+    payload = result.to_dict()
+
+    assert "chunking" in payload
+    assert payload["chunking"]["chunk_count"] == 1
+    assert payload["chunking"]["chunks"] == ["Jane Doe is here."]
+    assert payload["chunking"]["max_chunk_chars"] == 50
+    assert payload["chunking"]["chunk_overlap_chars"] == 10
 
 
 def test_engine_detect_entities() -> None:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 try:
@@ -15,12 +15,36 @@ from anonlm.graph import create_graph
 
 
 @dataclass(frozen=True)
+class ChunkingMetadata:
+    chunk_count: int
+    chunks: list[str]
+    max_chunk_chars: int
+    chunk_overlap_chars: int
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "chunk_count": self.chunk_count,
+            "chunks": self.chunks,
+            "max_chunk_chars": self.max_chunk_chars,
+            "chunk_overlap_chars": self.chunk_overlap_chars,
+        }
+
+
+@dataclass(frozen=True)
 class AnonymizationResult:
     anonymized_text: str
     mapping_forward: dict[str, str]
     mapping_reverse: dict[str, str]
     all_entities: list[dict[str, str]]
     type_counters: dict[str, int]
+    chunking: ChunkingMetadata = field(
+        default_factory=lambda: ChunkingMetadata(
+            chunk_count=0,
+            chunks=[],
+            max_chunk_chars=0,
+            chunk_overlap_chars=0,
+        )
+    )
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -29,6 +53,7 @@ class AnonymizationResult:
             "mapping_reverse": self.mapping_reverse,
             "all_entities": self.all_entities,
             "type_counters": self.type_counters,
+            "chunking": self.chunking.to_dict(),
         }
 
 
@@ -50,6 +75,12 @@ class AnonymizationEngine:
             mapping_reverse=result["mapping_reverse"],
             all_entities=result["all_entities"],
             type_counters=result["type_counters"],
+            chunking=ChunkingMetadata(
+                chunk_count=len(result["chunks"]),
+                chunks=result["chunks"],
+                max_chunk_chars=self.config.max_chunk_chars,
+                chunk_overlap_chars=self.config.chunk_overlap_chars,
+            ),
         )
 
     def detect_entities(self, text: str) -> list[dict[str, str]]:

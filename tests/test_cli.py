@@ -6,7 +6,7 @@ from anonlm import cli
 from anonlm.benchmarking.runner import BenchmarkRunResult
 from anonlm.benchmarking.splits import BenchmarkSplit
 from anonlm.config import AnonLMConfig
-from anonlm.engine import AnonymizationResult
+from anonlm.engine import AnonymizationResult, ChunkingMetadata
 
 
 class FakeEngine:
@@ -17,6 +17,12 @@ class FakeEngine:
             mapping_reverse={"[[PERSON_1]]": "Jane Doe"},
             all_entities=[{"type": "PERSON", "text": "Jane Doe", "canonical": "Jane Doe", "token": "[[PERSON_1]]"}],
             type_counters={"PERSON": 1},
+            chunking=ChunkingMetadata(
+                chunk_count=1,
+                chunks=[text],
+                max_chunk_chars=1000,
+                chunk_overlap_chars=100,
+            ),
         )
 
 
@@ -28,6 +34,7 @@ def test_cli_anonymize_text(monkeypatch, capsys) -> None:  # noqa: ANN001
 
     assert code == 0
     assert "[[PERSON_1]]" in captured.out
+    assert '"chunking"' in captured.out
 
 
 def test_cli_anonymize_file_output(monkeypatch, tmp_path: Path) -> None:  # noqa: ANN001
@@ -50,7 +57,9 @@ def test_cli_anonymize_file_output(monkeypatch, tmp_path: Path) -> None:  # noqa
     )
 
     assert code == 0
-    assert "[[PERSON_1]]" in output_path.read_text(encoding="utf-8")
+    output = output_path.read_text(encoding="utf-8")
+    assert "[[PERSON_1]]" in output
+    assert '"chunking"' in output
 
 
 def test_cli_benchmark_run(monkeypatch) -> None:  # noqa: ANN001

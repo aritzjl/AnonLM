@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project follows Semantic Versioning.
 
+## [0.1.1] - 2026-02-28
+### Added
+- `AnonymizationResult` now includes chunking metadata (`chunk_count`, `chunks`, `max_chunk_chars`, `chunk_overlap_chars`).
+- CLI JSON output now includes `chunking` in anonymization payloads.
+
+### Changed
+- Updated tests and README examples to cover chunking metadata in responses.
+
 ## [0.1.0] - 2026-02-28
 ### Added
 - Initial standalone `anonlm` package.

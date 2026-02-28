@@ -30,6 +30,8 @@ from anonlm import anonymize
 result = anonymize("Contact Jane Doe at jane.doe@example.com or +34 600 123 456.")
 print(result.anonymized_text)
 print(result.mapping_forward)
+print(result.chunking.chunk_count)
+print(result.chunking.chunks)
 ```
 
 ## Quickstart (CLI)
@@ -117,6 +119,12 @@ See `docs/benchmarking.md` for protocol and interpretation guidelines.
 - `anonlm.anonymize(text: str, config: AnonLMConfig | None = None) -> AnonymizationResult`
 - `anonlm.deanonymize(text: str, mapping_reverse: dict[str, str]) -> str`
 - `anonlm.create_engine(config: AnonLMConfig | None = None) -> AnonymizationEngine`
+
+`AnonymizationResult` includes chunking metadata in `result.chunking` (and in `result.to_dict()["chunking"]`):
+- `chunk_count`: total chunks processed
+- `chunks`: chunk content list in processing order
+- `max_chunk_chars`: chunk size setting used
+- `chunk_overlap_chars`: overlap setting used
 
 ## Project status
 
